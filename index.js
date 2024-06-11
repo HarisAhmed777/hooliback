@@ -12,12 +12,23 @@ const FeedbackModel = require('./models/feedback');
 const PurchasePackageModel = require('./models/Packagepurshase');
 
 const app = express();
-app.use(express.json());
+
 app.use(cors({
-   origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app/"], // Add your Netlify URL here
+   origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app"],
    methods: ["GET", "POST"],
-   credentials: true
+   credentials: true,
+   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// Handle preflight requests
+app.options('*', cors({
+   origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app"],
+   methods: ["GET", "POST"],
+   credentials: true,
+   allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieparser());
 
@@ -29,14 +40,6 @@ mongoose.connect(process.env.MONGO_URL, {
 }).catch((e) => {
     console.error("Error in connecting db", e);
 });
-
-// Handle preflight requests
-app.options('*', cors({
-   origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app"], // Add your Netlify URL here
-   methods: ["GET", "POST"],
-   credentials: true,
-   allowedHeaders: ["Content-Type", "Authorization"]
-}));
 
 app.post('/register', async (req, res) => {
     const { firstname, lastname, mobilenumber, email, password } = req.body;
@@ -185,5 +188,5 @@ app.post('/purchase-package', async (req, res) => {
 });
 
 app.listen(process.env.PORT, () => {
-    console.log("Server is connected",process.env.PORT);
+    console.log("Server is connected", process.env.PORT);
 });
