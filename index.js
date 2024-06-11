@@ -32,7 +32,7 @@ mongoose.connect(process.env.MONGO_URL, {
 
 // Handle preflight requests
 app.options('*', cors({
-   origin: ["http://localhost:5173", "https://666883129a50010d83669dcd--starlit-cajeta-fabbe7.netlify.app"], // Add your Netlify URL here
+   origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app"], // Add your Netlify URL here
    methods: ["GET", "POST"],
    credentials: true,
    allowedHeaders: ["Content-Type", "Authorization"]
