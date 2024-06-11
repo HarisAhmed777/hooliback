@@ -14,7 +14,7 @@ const PurchasePackageModel = require('./models/Packagepurshase');
 const app = express();
 app.use(express.json());
 app.use(cors({
-   origin: ["http://localhost:5173"],
+   origin: ["http://localhost:5173", "https://666883129a50010d83669dcd--starlit-cajeta-fabbe7.netlify.app"], // Add your Netlify URL here
    methods: ["GET", "POST"],
    credentials: true
 }));
@@ -29,6 +29,14 @@ mongoose.connect(process.env.MONGO_URL, {
 }).catch((e) => {
     console.error("Error in connecting db", e);
 });
+
+// Handle preflight requests
+app.options('*', cors({
+   origin: ["http://localhost:5173", "https://666883129a50010d83669dcd--starlit-cajeta-fabbe7.netlify.app"], // Add your Netlify URL here
+   methods: ["GET", "POST"],
+   credentials: true,
+   allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 app.post('/register', async (req, res) => {
     const { firstname, lastname, mobilenumber, email, password } = req.body;
