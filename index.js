@@ -10,24 +10,24 @@ const UserModel = require('./models/user');
 const BookingModel = require('./models/booking');
 const FeedbackModel = require('./models/feedback');
 const PurchasePackageModel = require('./models/Packagepurshase');
+const authenticateToken = require('./middleware/auth.js');
 
 const app = express();
 
 app.use(cors({
    origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app"],
-   methods: ["GET", "POST"],
+   methods: ["GET", "POST","PUT"],
    credentials: true,
    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 // Handle preflight requests
 app.options('*', cors({
-   origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app"],
-   methods: ["GET", "POST"],
-   credentials: true,
-   allowedHeaders: ["Content-Type", "Authorization"]
+    origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app"],
+    methods: ["GET", "POST", "PUT"], // Added PUT method for update
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
-
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieparser());
@@ -156,6 +156,38 @@ app.get('/user', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+// Profile Update Endpoint
+app.put('/user/update', authenticateToken, async (req, res) => {
+    const { email, firstname, lastname, mobilenumber } = req.body;
+    
+    // Input sanitization
+    const sanitizedEmail = email.trim();
+    const sanitizedFirstname = firstname.trim();
+    const sanitizedLastname = lastname.trim();
+    const sanitizedMobilenumber = parseInt(mobilenumber, 10);
+
+    if (!sanitizedEmail || !sanitizedFirstname || !sanitizedLastname || isNaN(sanitizedMobilenumber)) {
+        return res.status(400).json({ error: "Invalid input data" });
+    }
+
+    try {
+        const updatedUser = await UserModel.findOneAndUpdate(
+            { email: sanitizedEmail },
+            { firstname: sanitizedFirstname, lastname: sanitizedLastname, mobilenumber: sanitizedMobilenumber },
+            { new: true }
+        );
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json(updatedUser);
+    } catch (error) {
+        console.error("Error updating user profile:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 
 app.post('/feedback', async (req, res) => {
     try {
