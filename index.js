@@ -3,34 +3,22 @@ const express = require("express");
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const cookieparser = require('cookie-parser');
-const UserModel = require('./models/user');
-const BookingModel = require('./models/booking');
-const FeedbackModel = require('./models/feedback');
-const PurchasePackageModel = require('./models/Packagepurshase');
+const cookieParser = require('cookie-parser');
 const authenticateToken = require('./middleware/auth.js');
+const UserModel = require('./models/user');
 
 const app = express();
 
 app.use(cors({
-   origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app"],
-   methods: ["GET", "POST","PUT"],
-   credentials: true,
-   allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
-// Handle preflight requests
-app.options('*', cors({
     origin: ["http://localhost:5173", "https://starlit-cajeta-fabbe7.netlify.app"],
-    methods: ["GET", "POST", "PUT"], // Added PUT method for update
+    methods: ["GET", "POST", "PUT"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cookieparser());
+app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -40,6 +28,7 @@ mongoose.connect(process.env.MONGO_URL, {
 }).catch((e) => {
     console.error("Error in connecting db", e);
 });
+
 
 app.post('/register', async (req, res) => {
     const { firstname, lastname, mobilenumber, email, password } = req.body;
@@ -159,10 +148,10 @@ app.get('/user', async (req, res) => {
 
 
 // Profile Update Endpoint
+
 app.put('/user/update', authenticateToken, async (req, res) => {
     const { email, firstname, lastname, mobilenumber } = req.body;
-    
-    // Input sanitization
+
     const sanitizedEmail = email.trim();
     const sanitizedFirstname = firstname.trim();
     const sanitizedLastname = lastname.trim();
@@ -187,7 +176,6 @@ app.put('/user/update', authenticateToken, async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
-
 
 app.post('/feedback', async (req, res) => {
     try {
