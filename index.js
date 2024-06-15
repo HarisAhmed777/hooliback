@@ -3,10 +3,14 @@ const express = require("express");
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const authenticateToken = require('./middleware/auth.js');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const cookieparser = require('cookie-parser');
 const UserModel = require('./models/user');
-
+const BookingModel = require('./models/booking');
+const FeedbackModel = require('./models/feedback');
+const PurchasePackageModel = require('./models/Packagepurshase');
+const authenticateToken = require('./middleware/auth.js');
 const app = express();
 
 app.use(cors({
