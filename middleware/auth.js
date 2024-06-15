@@ -9,7 +9,7 @@ const authenticateToken = (req, res, next) => {
 
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-            console.error("JWT verification failed:", err);
+            console.error("JWT verification failed:", err.message);
             return res.sendStatus(403); // Forbidden
         }
         req.user = user;
