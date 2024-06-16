@@ -155,9 +155,9 @@ app.get('/user', async (req, res) => {
 app.put('/user/update', async (req, res) => {
     const { email, firstname, lastname, mobilenumber } = req.body;
 
-    const sanitizedEmail = email.trim();
-    const sanitizedFirstname = firstname.trim();
-    const sanitizedLastname = lastname.trim();
+    const sanitizedEmail = email;
+    const sanitizedFirstname = firstname;
+    const sanitizedLastname = lastname;
     const sanitizedMobilenumber = parseInt(mobilenumber, 10);
 
     if (!sanitizedEmail || !sanitizedFirstname || !sanitizedLastname || isNaN(sanitizedMobilenumber)) {
