@@ -10,7 +10,6 @@ const UserModel = require('./models/user');
 const BookingModel = require('./models/booking');
 const FeedbackModel = require('./models/feedback');
 const PurchasePackageModel = require('./models/Packagepurshase');
-const authenticateToken = require('./middleware/auth.js');
 const app = express();
 
 app.use(cors({
@@ -153,7 +152,7 @@ app.get('/user', async (req, res) => {
 
 // Profile Update Endpoint
 
-app.put('/user/update', authenticateToken, async (req, res) => {
+app.put('/user/update', async (req, res) => {
     const { email, firstname, lastname, mobilenumber } = req.body;
 
     const sanitizedEmail = email.trim();
@@ -168,8 +167,7 @@ app.put('/user/update', authenticateToken, async (req, res) => {
     try {
         const updatedUser = await UserModel.findOneAndUpdate(
             { email: sanitizedEmail },
-            { firstname: sanitizedFirstname, lastname: sanitizedLastname, mobilenumber: sanitizedMobilenumber },
-            { new: true }
+            { firstname: sanitizedFirstname, lastname: sanitizedLastname, mobilenumber: sanitizedMobilenumber }
         );
         if (!updatedUser) {
             return res.status(404).json({ error: "User not found" });
