@@ -155,9 +155,9 @@ app.get('/user', async (req, res) => {
 app.put('/user/update', async (req, res) => {
     const { email, firstname, lastname, mobilenumber } = req.body;
 
-    const sanitizedEmail = email;
-    const sanitizedFirstname = firstname;
-    const sanitizedLastname = lastname;
+    const sanitizedEmail = email.trim();
+    const sanitizedFirstname = firstname.trim();
+    const sanitizedLastname = lastname.trim();
     const sanitizedMobilenumber = parseInt(mobilenumber, 10);
 
     if (!sanitizedEmail || !sanitizedFirstname || !sanitizedLastname || isNaN(sanitizedMobilenumber)) {
@@ -167,7 +167,8 @@ app.put('/user/update', async (req, res) => {
     try {
         const updatedUser = await UserModel.findOneAndUpdate(
             { email: sanitizedEmail },
-            { firstname: sanitizedFirstname, lastname: sanitizedLastname, mobilenumber: sanitizedMobilenumber }
+            { firstname: sanitizedFirstname, lastname: sanitizedLastname, mobilenumber: sanitizedMobilenumber },
+            { new: true } // Return the updated document
         );
         if (!updatedUser) {
             return res.status(404).json({ error: "User not found" });
