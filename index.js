@@ -228,11 +228,30 @@ app.post('/forgotpassword', async (req, res) => {
     }
 });
 
-app.get("/resetpassword/:_id/:token",async(req,res)=>{
-    const {_id,token} = req.params;
-    console.log(req.params);
-    res.send("Done")
-})
+app.post("/resetpassword/:_id/:token", async (req, res) => {
+    const { _id, token } = req.params;
+    const { password } = req.body;
+
+    try {
+        jwt.verify(token, JWT_SECRET, async (err, decodedToken) => {
+            if (err) {
+                console.error("JWT verification error:", err);
+                return res.status(401).send("Invalid or expired token. Please request a new password reset.");
+            }
+            const user = await UserModel.findById(_id);
+            if (!user) {
+                return res.status(404).send("User not found");
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user.password = hashedPassword;
+            await user.save();
+            res.status(200).send("Password updated successfully");
+        });
+    } catch (error) {
+        console.error("Error updating password:", error);
+        res.status(500).send("Error updating password. Please try again later.");
+    }
+});
 
 app.listen(process.env.PORT, () => {
     console.log("Server is connected", process.env.PORT);
