@@ -210,19 +210,22 @@ app.post('/purchase-package', async (req, res) => {
 });
 
 
-app.post("/forgotpassword",async(req,res)=>{
-    const {email} =  req.body;
-    try{
-        const oldUser = await UserModel.findOne({email});
-        if(!oldUser){
-            return res.json({status:"user not exits"});
+app.post('/forgotpassword', async (req, res) => {
+    const { email } = req.body;
+    try {
+        const oldUser = await UserModel.findOne({ email });
+        if (!oldUser) {
+            return res.json({ status: 'user not exists' });
         }
         const secret = process.env.JWT_SECRET + oldUser.password;
-        const tokenn = jwt.sign({email:oldUser.email,id:oldUser._id},secret,{expiresIn:"5m"}); 
+        const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: '5m' });
         const link = `http://localhost:5173/resetpassword/${oldUser._id}/${token}`;
         console.log(link);
-        return res.json({status:link})
-    } catch(error){}
+        return res.json({ status: link });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+    }
 });
 
 app.listen(process.env.PORT, () => {
