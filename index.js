@@ -226,7 +226,7 @@ app.post('/forgotpassword', async (req, res) => {
             service: 'gmail',
             auth: {
               user: 'harisahsolo@gmail.com',
-              pass: "wuarcihrxmcpvpsi",
+              pass: "wuar cihr xmcp vpsi",
             }
           });
           
@@ -244,7 +244,7 @@ app.post('/forgotpassword', async (req, res) => {
               console.log('Email sent: ' + info.response);
             }
           });
-        return res.json({ status: link });
+        return res.json({ status:"Email sent successfully" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
