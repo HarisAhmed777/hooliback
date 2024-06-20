@@ -10,6 +10,7 @@ const UserModel = require('./models/user');
 const BookingModel = require('./models/booking');
 const FeedbackModel = require('./models/feedback');
 const PurchasePackageModel = require('./models/Packagepurshase');
+const nodemailer = require("nodemailer");
 const app = express();
 
 app.use(cors({
@@ -221,6 +222,28 @@ app.post('/forgotpassword', async (req, res) => {
         const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: '5m' });
         const link = `http://localhost:5173/resetpassword/${oldUser._id}/${token}`;
         console.log(link);
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'harisahsolo.com',
+              pass: "wuarcihrxmcpvpsi",
+            }
+          });
+          
+          var mailOptions = {
+            from: 'youremail@gmail.com',
+            to: email,
+            subject: 'Link to Reset Your Password ',
+            text:link
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
         return res.json({ status: link });
     } catch (error) {
         console.error(error);
