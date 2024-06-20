@@ -222,28 +222,28 @@ app.post('/forgotpassword', async (req, res) => {
         const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: '5m' });
         const link = `http://localhost:5173/resetpassword/${oldUser._id}/${token}`;
         console.log(link);
-        var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              user: 'harisahsolo@gmail.com',
-              pass: "wuar cihr xmcp vpsi",
-            }
-          });
-          
-          var mailOptions = {
-            from: 'harisahsolo@gmail.com',
-            to: email,
-            subject: 'Link to Reset Your Password ',
-            text:link
-          };
-          
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
+        
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'harisahsolo@gmail.com',
+        pass: 'THE-GENERATED-APP-PASSWORD'
+    }
+});
+
+send();
+
+async function send() {
+    const result = await transporter.sendMail({
+        from: 'harisahsolo@gmail.com',
+        to: 'ahmedharis371@gmail.com',
+        subject: 'Hello World',
+        text:link,
+    });
+
+    console.log(JSON.stringify(result, null, 4));
+}
+
         return res.json({ status:"Email sent successfully" });
     } catch (error) {
         console.error(error);
