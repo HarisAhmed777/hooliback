@@ -230,6 +230,7 @@ app.post('/forgotpassword', async (req, res) => {
 
 app.get("/resetpassword/:_id/:token",async(req,res)=>{
     const {_id,token} = req.params;
+    console.log(req.params);
     res.send("Done")
 })
 
