@@ -228,6 +228,11 @@ app.post('/forgotpassword', async (req, res) => {
     }
 });
 
+app.get("/resetpassword/:_id/:token",async(req,res)=>{
+    const {_id,token} = req.params;
+    res.send("Done")
+})
+
 app.listen(process.env.PORT, () => {
     console.log("Server is connected", process.env.PORT);
 });
