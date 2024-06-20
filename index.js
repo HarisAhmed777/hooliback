@@ -10,7 +10,7 @@ const UserModel = require('./models/user');
 const BookingModel = require('./models/booking');
 const FeedbackModel = require('./models/feedback');
 const PurchasePackageModel = require('./models/Packagepurshase');
-const nodemailer = require("nodemailer");
+var nodemailer = require("nodemailer");
 const app = express();
 
 app.use(cors({
@@ -223,31 +223,38 @@ app.post('/forgotpassword', async (req, res) => {
         const link = `http://localhost:5173/resetpassword/${oldUser._id}/${token}`;
         console.log(link);
         
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            port: 465,
-            secure: true,
-            auth: {
-                user: "harisahsolo@gmail.com",
-                pass: "wuarcihrxmcpvpsi",
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        });
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'harisahsolo@gmail.com',
+      pass: 'wuarcihrxmcpvpsi'
+    },
+    tls:{
+        rejectUnauthorized: false
+    }
+  });
+  
+  var mailOptions = {
+    from: 'harisahsolo@gmail.com',
+    to: email,
+    subject: 'Sending Email using Node.js',
+    text: link
+  };
+  
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
         
-        send().catch(console.error);
         
-        async function send() {
-            const result = await transporter.sendMail({
-                from: 'harisahsolo@gmail.com',
-                to: 'ahmedharis371@gmail.com',
-                subject: 'Hello World',
-                text: 'This is a test email from Node.js using Nodemailer.'
-            });
         
-            console.log('Email sent:', result.response);
-        }
+        
+
 
     return res.json({ status:"Email sent successfully" });
     } catch (error) {
