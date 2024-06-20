@@ -223,34 +223,31 @@ app.post('/forgotpassword', async (req, res) => {
         const link = `http://localhost:5173/resetpassword/${oldUser._id}/${token}`;
         console.log(link);
         
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    port :465,
-    secure:true,
-    logger:true,
-    debug:true,
-    secureConnection:false,
-    auth: {
-        user: "harisahsolo@gmail.com",
-        pass: "wuarcihrxmcpvpsi",
-    },
-    tls:{
-        rejectUnAuthorized:true
-    }
-});
-
-send();
-
-async function send() {
-    const result = await transporter.sendMail({
-        from: 'harisahsolo@gmail.com',
-        to: 'ahmedharis371@gmail.com',
-        subject: 'Hello World',
-        text:link,
-    });
-
-    console.log(JSON.stringify(result, null, 4));
-}
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            port: 465,
+            secure: true,
+            auth: {
+                user: "harisahsolo@gmail.com",
+                pass: "wuarcihrxmcpvpsi",
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+        
+        send().catch(console.error);
+        
+        async function send() {
+            const result = await transporter.sendMail({
+                from: 'harisahsolo@gmail.com',
+                to: 'ahmedharis371@gmail.com',
+                subject: 'Hello World',
+                text: 'This is a test email from Node.js using Nodemailer.'
+            });
+        
+            console.log('Email sent:', result.response);
+        }
 
     return res.json({ status:"Email sent successfully" });
     } catch (error) {
