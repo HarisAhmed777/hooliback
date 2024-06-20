@@ -225,9 +225,17 @@ app.post('/forgotpassword', async (req, res) => {
         
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    port :465,
+    secure:true,
+    logger:true,
+    debug:true,
+    secureConnection:false,
     auth: {
-        user: 'harisahsolo@gmail.com',
-        pass: 'wuarcihrxmcpvpsi',
+        user: "harisahsolo@gmail.com",
+        pass: "wuarcihrxmcpvpsi",
+    },
+    tls:{
+        rejectUnAuthorized:true
     }
 });
 
@@ -244,7 +252,7 @@ async function send() {
     console.log(JSON.stringify(result, null, 4));
 }
 
-        return res.json({ status:"Email sent successfully" });
+    return res.json({ status:"Email sent successfully" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
