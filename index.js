@@ -220,7 +220,7 @@ app.post('/forgotpassword', async (req, res) => {
         }
         const secret = process.env.JWT_SECRET + oldUser.password;
         const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: '5m' });
-        const link = `http://localhost:5173/resetpassword/${oldUser._id}/${token}`;
+        const link = `https://starlit-cajeta-fabbe7.netlify.app/${oldUser._id}/${token}`;
         console.log(link);
         
 var transporter = nodemailer.createTransport({
@@ -239,7 +239,7 @@ var transporter = nodemailer.createTransport({
   var mailOptions = {
     from: 'harisahsolo@gmail.com',
     to: email,
-    subject: 'Sending Email using Node.js',
+    subject: 'Link for Reset your password',
     text: link
   };
   
