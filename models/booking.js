@@ -10,6 +10,7 @@ const BookingsSchema = new mongoose.Schema({
     enddate :Date,
     adults:Number,
     children:Number,
+    mobile:Number,
     totalamount:Number
 })
 

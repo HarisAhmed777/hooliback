@@ -78,8 +78,8 @@ app.post('/login', async (req, res) => {
 
 app.post('/booking', async (req, res) => {
     try {
-        const { name, age, email, persons, city, startdate, enddate, adults, children, totalamount } = req.body;
-        const newBooking = new BookingModel({ name, age, email, persons, city, startdate, enddate, adults, children, totalamount });
+        const { name, age, email, persons, city, startdate, enddate, adults, children,mobile, totalamount } = req.body;
+        const newBooking = new BookingModel({ name, age, email, persons, city, startdate, enddate, adults, children,mobile,totalamount });
         await newBooking.save();
         res.json({ status: "ok" });
     } catch (err) {
@@ -150,7 +150,6 @@ app.get('/user', async (req, res) => {
 });
 
 
-// Profile Update Endpoint
 
 app.put('/user/update', async (req, res) => {
     const { email, firstname, lastname, mobilenumber } = req.body;
