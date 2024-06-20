@@ -233,18 +233,23 @@ app.post("/resetpassword/:_id/:token", async (req, res) => {
     const { password } = req.body;
 
     try {
-        jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+        const user = await UserModel.findById(_id);
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        const secret = process.env.JWT_SECRET + user.password;
+
+        jwt.verify(token, secret, async (err, decodedToken) => {
             if (err) {
                 console.error("JWT verification error:", err);
                 return res.status(401).send("Invalid or expired token. Please request a new password reset.");
             }
-            const user = await UserModel.findById(_id);
-            if (!user) {
-                return res.status(404).send("User not found");
-            }
+
             const hashedPassword = await bcrypt.hash(password, 10);
             user.password = hashedPassword;
             await user.save();
+
             res.status(200).send("Password updated successfully");
         });
     } catch (error) {
