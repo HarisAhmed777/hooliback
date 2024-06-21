@@ -224,7 +224,7 @@ app.post('/forgotpassword', async (req, res) => {
         }
         const secret = process.env.JWT_SECRET + oldUser.password;
         const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: '5m' });
-        const link = `https://starlit-cajeta-fabbe7.netlify.app/${oldUser._id}/${token}`;
+        const link = `https://starlit-cajeta-fabbe7.netlify.app/resetpassword/${oldUser._id}/${token}`;
         console.log(link);
         
 var transporter = nodemailer.createTransport({
@@ -275,35 +275,35 @@ app.get("*",(req,res)=>{
     res.sendFile(path.join(__dirname,"/backend/build/index.html"))
 })
 
-app.post("/resetpassword/:_id/:token", async (req, res) => {
-    const { _id, token } = req.params;
-    const { password } = req.body;
+    app.post("/resetpassword/:_id/:token", async (req, res) => {
+        const { _id, token } = req.params;
+        const { password } = req.body;
 
-    try {
-        const user = await UserModel.findById(_id);
-        if (!user) {
-            return res.status(404).send("User not found");
-        }
-
-        const secret = process.env.JWT_SECRET + user.password;
-
-        jwt.verify(token, secret, async (err, decodedToken) => {
-            if (err) {
-                console.error("JWT verification error:", err);
-                return res.status(401).send("Invalid or expired token. Please request a new password reset.");
+        try {
+            const user = await UserModel.findById(_id);
+            if (!user) {
+                return res.status(404).send("User not found");
             }
 
-            const hashedPassword = await bcrypt.hash(password, 10);
-            user.password = hashedPassword;
-            await user.save();
+            const secret = process.env.JWT_SECRET + user.password;
 
-            res.status(200).send("Password updated successfully");
-        });
-    } catch (error) {
-        console.error("Error updating password:", error);
-        res.status(500).send("Error updating password. Please try again later.");
-    }
-});
+            jwt.verify(token, secret, async (err, decodedToken) => {
+                if (err) {
+                    console.error("JWT verification error:", err);
+                    return res.status(401).send("Invalid or expired token. Please request a new password reset.");
+                }
+
+                const hashedPassword = await bcrypt.hash(password, 10);
+                user.password = hashedPassword;
+                await user.save();
+
+                res.status(200).send("Password updated successfully");
+            });
+        } catch (error) {
+            console.error("Error updating password:", error);
+            res.status(500).send("Error updating password. Please try again later.");
+        }
+    });
 
 
 app.get('/*', (req, res) => {
