@@ -214,7 +214,6 @@ app.post('/purchase-package', async (req, res) => {
     }
 });
 
-app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.post('/forgotpassword', async (req, res) => {
     const { email } = req.body;
@@ -267,6 +266,14 @@ var transporter = nodemailer.createTransport({
         return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
     }
 });
+
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, 'frontend/build')));
+
+app.get("*",(req,res)=>{
+    res.sendFile(path.join(__dirname,"/frontend/build/index.html"))
+    res.sendFile(path.join(__dirname,"/backend/build/index.html"))
+})
 
 app.post("/resetpassword/:_id/:token", async (req, res) => {
     const { _id, token } = req.params;
