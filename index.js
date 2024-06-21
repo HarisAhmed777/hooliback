@@ -11,6 +11,8 @@ const BookingModel = require('./models/booking');
 const FeedbackModel = require('./models/feedback');
 const PurchasePackageModel = require('./models/Packagepurshase');
 var nodemailer = require("nodemailer");
+const path = require('path');
+
 const app = express();
 
 app.use(cors({
@@ -32,6 +34,8 @@ mongoose.connect(process.env.MONGO_URL, {
 }).catch((e) => {
     console.error("Error in connecting db", e);
 });
+
+
 
 
 app.post('/register', async (req, res) => {
@@ -210,6 +214,7 @@ app.post('/purchase-package', async (req, res) => {
     }
 });
 
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.post('/forgotpassword', async (req, res) => {
     const { email } = req.body;
@@ -293,6 +298,11 @@ app.post("/resetpassword/:_id/:token", async (req, res) => {
     }
 });
 
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build/index.html'));
+  }); 
+  
 app.listen(process.env.PORT, () => {
     console.log("Server is connected", process.env.PORT);
 });
